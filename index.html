@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mozaiq — color logic puzzles</title>
+  <meta name="description" content="A daily color logic puzzle game. Solve sections, mix hint colors, climb the leaderboard." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="brand">
+      <span class="brand-dots">
+        <span class="d-r"></span>
+        <span class="d-y"></span>
+        <span class="d-b"></span>
+      </span>
+      <span class="brand-name">Mozaiq</span>
+    </a>
+    <div class="nav-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="support.html">Support</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="brand-dots">
+        <span class="d-r"></span>
+        <span class="d-y"></span>
+        <span class="d-b"></span>
+      </div>
+      <h1>Mozaiq</h1>
+      <p class="tagline">A color logic puzzle, every day.</p>
+      <p class="description">
+        Color the sections. Mix the hints. Beat your best time and climb the
+        leaderboard. Mozaiq is a daily color logic puzzle for iPhone.
+      </p>
+    </section>
+
+    <div class="link-grid">
+      <a href="privacy.html" class="link-card">
+        <p class="link-card-title">Privacy Policy</p>
+        <p class="link-card-sub">What we collect and how we use it</p>
+      </a>
+      <a href="terms.html" class="link-card">
+        <p class="link-card-title">Terms of Service</p>
+        <p class="link-card-sub">The agreement when you use Mozaiq</p>
+      </a>
+      <a href="support.html" class="link-card">
+        <p class="link-card-title">Support</p>
+        <p class="link-card-sub">Get help or report an issue</p>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <span>© <span id="year">2026</span> Mozaiq. All rights reserved.</span>
+    <span>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="support.html">Support</a>
+    </span>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
