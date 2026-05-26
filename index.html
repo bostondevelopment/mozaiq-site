@@ -12,7 +12,7 @@
 </head>
 <body>
   <nav class="nav">
-    <a href="/" class="brand">
+    <a href="index.html" class="brand">
       <span class="brand-dots">
         <span class="d-r"></span>
         <span class="d-y"></span>
@@ -21,13 +21,15 @@
       <span class="brand-name">Mozaiq</span>
     </a>
     <div class="nav-links">
+      <a href="index.html" class="active">The App</a>
+      <a href="engineering.html">Engineering</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
       <a href="support.html">Support</a>
     </div>
   </nav>
 
-  <main>
+  <main class="wide">
     <section class="hero">
       <div class="brand-dots">
         <span class="d-r"></span>
@@ -40,27 +42,136 @@
         Color the sections. Mix the hints. Beat your best time and climb the
         leaderboard. Mozaiq is a daily color logic puzzle for iPhone.
       </p>
+      <div class="cta-row">
+        <!-- TODO: replace href="#" with real App Store / TestFlight URL when live -->
+        <a href="#" class="btn">Get Mozaiq for iPhone</a>
+        <a href="engineering.html" class="btn btn-secondary">How it's built</a>
+      </div>
     </section>
 
-    <div class="link-grid">
-      <a href="privacy.html" class="link-card">
-        <p class="link-card-title">Privacy Policy</p>
-        <p class="link-card-sub">What we collect and how we use it</p>
-      </a>
-      <a href="terms.html" class="link-card">
-        <p class="link-card-title">Terms of Service</p>
-        <p class="link-card-sub">The agreement when you use Mozaiq</p>
-      </a>
-      <a href="support.html" class="link-card">
-        <p class="link-card-title">Support</p>
-        <p class="link-card-sub">Get help or report an issue</p>
-      </a>
+    <!-- Hero strip: 3 polished App Store promo frames -->
+    <section class="screenshot-strip" aria-label="App Store promo screenshots">
+      <div class="screenshot">
+        <img src="assets/screenshots/mozaiq-promo-01.png" alt="Mozaiq promo: Color in the chaos" />
+      </div>
+      <div class="screenshot">
+        <img src="assets/screenshots/mozaiq-promo-03.png" alt="Mozaiq promo: From breezy to brain-melting" />
+      </div>
+      <div class="screenshot">
+        <img src="assets/screenshots/mozaiq-promo-05.png" alt="Mozaiq promo: Your daily puzzle palette" />
+      </div>
+    </section>
+
+    <!-- What Mozaiq is -->
+    <div class="card">
+      <h2>What Mozaiq is</h2>
+      <p>
+        Mozaiq is a daily color logic puzzle for iPhone. Every board is a small mosaic
+        split into <strong>sections</strong> — connected runs of cells that all share one color.
+        Your job is to figure out which section gets which paint, using the colored hint
+        cells as anchors.
+      </p>
+      <p>
+        The twist: when two sections cross, the cell at their intersection shows the
+        <em>mixed</em> color of the two — yellow plus blue makes green, red plus yellow
+        makes orange, red plus blue makes purple. Read the mix, work backwards to the
+        section colors, fill the board, beat the clock.
+      </p>
+      <p>
+        Four difficulty tiers, a fresh puzzle every day, and a global leaderboard
+        that rewards fewer moves and faster solves.
+      </p>
     </div>
+
+    <!-- How to play -->
+    <section class="feature-row">
+      <div class="feature-shot">
+        <img src="assets/screenshots/pic%200.png" alt="Mozaiq main board — Tap to start" />
+      </div>
+      <div class="feature-copy">
+        <h2>How to <span class="accent-b">play.</span></h2>
+        <p class="lede">Three colors. One paintbrush. A timer ticking down.</p>
+        <ol>
+          <li><strong>Pick a paint</strong> — yellow, blue, or red, from the row at the bottom.</li>
+          <li><strong>Tap a section</strong> to fill every cell in it with that color.</li>
+          <li><strong>Watch the intersections</strong> auto-mix. They turn orange, green, or purple based on the two sections that cross.</li>
+          <li><strong>Match the puzzle</strong> by giving every section the right color before time runs out.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Gameplay arc: empty → mid → completed -->
+    <section class="arc">
+      <h2 class="arc-title">Watch a mosaic come together.</h2>
+      <p class="arc-sub">Empty grid &nbsp;→&nbsp; the puzzle takes shape &nbsp;→&nbsp; perfect solve.</p>
+      <div class="screenshot-strip" aria-label="Gameplay progression: empty, mid-game, completed">
+        <div class="screenshot">
+          <img src="assets/screenshots/pic1.png" alt="Mozaiq board — empty starting state with hints only" />
+        </div>
+        <div class="screenshot">
+          <img src="assets/screenshots/pic2.png" alt="Mozaiq board — mid-game, sections being filled in" />
+        </div>
+        <div class="screenshot">
+          <img src="assets/screenshots/pic3.png" alt="Mozaiq board — completed, every section solved" />
+        </div>
+      </div>
+    </section>
+
+    <!-- How to win -->
+    <section class="feature-row reverse">
+      <div class="feature-shot">
+        <img src="assets/screenshots/mozaiq-promo-02.png" alt="Mozaiq promo: Tap. Paint. Solve." />
+      </div>
+      <div class="feature-copy">
+        <h2>How to <span class="accent-r">win.</span></h2>
+        <p class="lede">Read the hints. Trust the mix. Don't guess.</p>
+        <ul>
+          <li>Every solvable puzzle has <strong>one unique answer</strong> — no guessing required, ever.</li>
+          <li>Colored hint cells lock in known colors. Mixed-color hints constrain <em>two</em> sections at once — the math always works out.</li>
+          <li>Solve in <strong>par moves</strong> for the full three-star rating. Solve fast for leaderboard glory.</li>
+          <li>Stuck? Hit <strong>Reset</strong> and try a different read of the hints. The clock keeps going.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Leaderboard -->
+    <section class="feature-row">
+      <div class="feature-shot">
+        <img src="assets/screenshots/pic%204.png" alt="Mozaiq leaderboard — projected rank after a solve" />
+      </div>
+      <div class="feature-copy">
+        <h2>Race the clock. <span class="accent-y">Claim your spot.</span></h2>
+        <p class="lede">A global leaderboard for every single puzzle.</p>
+        <ul>
+          <li>Every solve posts your <strong>time, moves, and score</strong> to that puzzle's board.</li>
+          <li>Per-puzzle, per-difficulty rankings — beat <em>this</em> board's best, not some average.</li>
+          <li>See your <strong>projected rank</strong> the moment you finish.</li>
+          <li>Privacy-first: your email is the account, your display name is what shows up.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="feature-row reverse">
+      <div class="feature-shot">
+        <img src="assets/screenshots/mozaiq-promo-04.png" alt="Mozaiq promo: Race the clock, claim your spot" />
+      </div>
+      <div class="feature-copy">
+        <h2>A small, <span class="accent-g">satisfying ritual.</span></h2>
+        <p class="lede">Calm color in your pocket. 3,187 puzzles ready to play.</p>
+        <div class="cta-row" style="justify-content: flex-start;">
+          <!-- TODO: replace href="#" with real App Store / TestFlight URL when live -->
+          <a href="#" class="btn">Get Mozaiq for iPhone</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
     <span>© <span id="year">2026</span> Mozaiq. All rights reserved.</span>
     <span>
+      <a href="index.html">The App</a>
+      <a href="engineering.html">Engineering</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
       <a href="support.html">Support</a>

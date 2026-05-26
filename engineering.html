@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineering — Mozaiq</title>
+  <meta name="description" content="How Mozaiq is built: tech stack, puzzle-generation algorithm, automation pipeline, agent-assisted workflow, and testing approach." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <span class="brand-dots">
+        <span class="d-r"></span>
+        <span class="d-y"></span>
+        <span class="d-b"></span>
+      </span>
+      <span class="brand-name">Mozaiq</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">The App</a>
+      <a href="engineering.html" class="active">Engineering</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="support.html">Support</a>
+    </div>
+  </nav>
+
+  <main class="wide">
+    <p class="page-kicker">Portfolio · Technical deep dive</p>
+    <h1 class="page-title">Building Mozaiq.</h1>
+    <p class="page-lede">
+      A daily color logic puzzle game, built solo end-to-end: native iOS app, web
+      tooling, backend, and an industrial-grade content pipeline. This page is a
+      walk-through of how it actually works under the hood.
+    </p>
+
+    <!-- At a glance -->
+    <section class="stat-grid">
+      <div class="stat">
+        <p class="stat-num">8,084</p>
+        <p class="stat-label">Production-validated puzzles in the shipping bundle</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">~37K</p>
+        <p class="stat-label">Lines of TypeScript across mobile, web, scripts, shared core</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">41</p>
+        <p class="stat-label">Pipeline CLI scripts (+ 35 npm aliases)</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">4</p>
+        <p class="stat-label">Difficulty tiers (Easy / Medium / Hard / Expert)</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">3</p>
+        <p class="stat-label">Board sizes supported (7×7, 9×9, 15×15)</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">1</p>
+        <p class="stat-label">Shared core package consumed by both mobile and web</p>
+      </div>
+    </section>
+
+    <!-- The tech stack -->
+    <div class="card">
+      <h2>The tech stack</h2>
+      <p>
+        Mozaiq is a TypeScript monorepo (npm workspaces) with three consumer surfaces
+        — the mobile app, an internal web evaluation tool, and a CLI pipeline — all
+        sharing a single core package so the solver that ran during generation is
+        byte-for-byte the same one running on your phone.
+      </p>
+
+      <div class="stack-group">
+        <h3>Mobile (the player-facing product)</h3>
+        <div class="tech-tags">
+          <span class="tech-tag">Expo 55</span>
+          <span class="tech-tag">React Native 0.83</span>
+          <span class="tech-tag">React 19</span>
+          <span class="tech-tag">TypeScript 5.9</span>
+          <span class="tech-tag">expo-audio</span>
+          <span class="tech-tag">expo-haptics</span>
+          <span class="tech-tag">expo-font</span>
+          <span class="tech-tag">Nunito via @expo-google-fonts</span>
+          <span class="tech-tag">AsyncStorage</span>
+          <span class="tech-tag">Supabase JS SDK</span>
+        </div>
+      </div>
+
+      <div class="stack-group">
+        <h3>Web (internal evaluation &amp; research tool)</h3>
+        <div class="tech-tags">
+          <span class="tech-tag">Vite 5</span>
+          <span class="tech-tag">React 18</span>
+          <span class="tech-tag">TypeScript</span>
+          <span class="tech-tag">Web Workers (solver + generator off main thread)</span>
+        </div>
+      </div>
+
+      <div class="stack-group">
+        <h3>Shared core</h3>
+        <div class="tech-tags">
+          <span class="tech-tag">@crosscolor/core (workspace package)</span>
+          <span class="tech-tag">Solver</span>
+          <span class="tech-tag">Board parser</span>
+          <span class="tech-tag">Color-mix rules</span>
+          <span class="tech-tag">Pipeline contracts</span>
+        </div>
+      </div>
+
+      <div class="stack-group">
+        <h3>Backend</h3>
+        <div class="tech-tags">
+          <span class="tech-tag">Supabase (Postgres)</span>
+          <span class="tech-tag">Email auth</span>
+          <span class="tech-tag">Row-Level Security</span>
+          <span class="tech-tag">3 SQL migrations</span>
+          <span class="tech-tag">obscenity (name filter)</span>
+        </div>
+      </div>
+
+      <div class="stack-group">
+        <h3>Testing &amp; release</h3>
+        <div class="tech-tags">
+          <span class="tech-tag">Vitest</span>
+          <span class="tech-tag">Reference fixtures</span>
+          <span class="tech-tag">End-to-end pipeline validators</span>
+          <span class="tech-tag">Local macOS → IPA → TestFlight</span>
+          <span class="tech-tag">Typed-yes Supabase dev→prod promotion</span>
+          <span class="tech-tag">patch-package</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- The algorithm -->
+    <div class="card">
+      <h2>The puzzle-generation algorithm</h2>
+
+      <p>
+        Three base colors — <span class="accent-r"><strong>red</strong></span>,
+        <span class="accent-y"><strong>yellow</strong></span>,
+        <span class="accent-b"><strong>blue</strong></span> — combine into three mixed colors
+        wherever two sections cross: yellow + blue = green, red + yellow = orange,
+        red + blue = purple. These mixing rules <em>are</em> the constraints.
+      </p>
+
+      <div class="swatch-row" aria-hidden="true">
+        <div class="swatch" style="background: #F94D5C;">R</div>
+        <div class="swatch" style="background: #FFC83C; color: #2A1B12; text-shadow:none;">Y</div>
+        <div class="swatch" style="background: #3D8DFB;">B</div>
+        <div class="swatch" style="background: #FF8A39;">R+Y</div>
+        <div class="swatch" style="background: #4FCE6F;">Y+B</div>
+        <div class="swatch" style="background: #B669E2;">R+B</div>
+      </div>
+
+      <h3>Solver</h3>
+      <p>
+        Exhaustive backtracking with constraint propagation. Given a board mask and
+        a set of hint cells, the solver enumerates legal section-color assignments,
+        pruning branches the moment a mixed-color cell contradicts its adjacent
+        sections. Configurable timeout (default 30 seconds, validation runs go up
+        to 3 minutes) and a solution cap (default 1,000; uniqueness audits push to
+        5,000). Lives in <code class="path">src/lib/solver.ts</code> and runs in a
+        Web Worker on the desktop tool so the UI thread never blocks.
+      </p>
+
+      <h3>Generator</h3>
+      <p>
+        Candidate layouts are pulled from external crossword corpora (NYT,
+        WordsUp, iPuz) via importers in <code class="path">src/lib/layoutBuild/</code>,
+        ranked by viability and propagation quality, then handed to the puzzle
+        generator which places hint cells and runs the solver to check uniqueness.
+        Anything that doesn't produce a single, no-guess solution is rejected and
+        regenerated. A recent commit literally reads
+        <em>"Replace puzzle bundle with quality-enforced regeneration"</em> — the
+        8,084-puzzle shipping bundle is the <em>output</em> of running this loop
+        until everything passes.
+      </p>
+
+      <h3>Difficulty rating</h3>
+      <p>
+        <code class="path">scripts/analyze-puzzle-difficulty.ts</code> labels every
+        generated puzzle Easy / Medium / Hard / Expert from propagation depth, hint
+        density, and search-space metrics — not from board size. A small 7×7 with
+        heavy ambiguity can rate Expert; a sparse 15×15 with strong propagation
+        can rate Easy.
+      </p>
+    </div>
+
+    <!-- The pipeline -->
+    <div class="card">
+      <h2>The content pipeline</h2>
+      <p>
+        41 TypeScript CLI scripts plus 2 shell scripts orchestrate the journey from
+        raw external crossword grids to a curated, validated, difficulty-labeled
+        puzzle bundle ready to ship inside the app. Each stage is one npm script.
+      </p>
+
+      <div class="pipeline">
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">1 · Ingest</p>
+          <p class="pipeline-stage-detail">
+            Pull external corpora: <code>download-wordsup-grids</code>,
+            <code>restructure-nyt-crosswords</code>, <code>import-masks</code>,
+            iPuz importer.
+          </p>
+        </div>
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">2 · Extract layouts</p>
+          <p class="pipeline-stage-detail">
+            <code>make-layouts extract</code> finds valid Mozaiq-compatible layouts
+            (no illegal 2×2 blocks, valid section topology) inside the corpus.
+          </p>
+        </div>
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">3 · Rank</p>
+          <p class="pipeline-stage-detail">
+            <code>rank-mask-library</code>, <code>find-golden-templates</code>,
+            <code>rank-hard-layouts</code> — score layouts by viability and
+            propagation quality.
+          </p>
+        </div>
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">4 · Generate puzzles</p>
+          <p class="pipeline-stage-detail">
+            <code>batch-make-puzzles</code> assigns section colors, places hints,
+            and runs <code>create-hints</code> for each chosen layout.
+          </p>
+        </div>
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">5 · Validate uniqueness</p>
+          <p class="pipeline-stage-detail">
+            <code>validate-solution-distinctness</code>,
+            <code>audit-solution-counts</code>,
+            <code>validate-bulk-solver</code> — re-solve every puzzle and confirm
+            exactly one solution, with no guess-required cells.
+          </p>
+        </div>
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">6 · Difficulty rate</p>
+          <p class="pipeline-stage-detail">
+            <code>analyze-puzzle-difficulty</code> labels each puzzle by propagation
+            metrics, then <code>curate-hard-puzzles</code> picks the top expert set.
+          </p>
+        </div>
+        <div class="pipeline-stage">
+          <p class="pipeline-stage-name">7 · Bundle &amp; ship</p>
+          <p class="pipeline-stage-detail">
+            <code>merge-label-puzzles</code> assembles the final JSON, dropped into
+            the app and shipped via the iOS build script.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent-assisted workflow -->
+    <div class="card">
+      <h2>Agent-assisted workflow</h2>
+      <p>
+        Mozaiq was built with AI coding assistants from day one, but the interesting
+        part isn't <em>that</em> — it's the discipline around it. Two patterns kept
+        the code coherent at scale:
+      </p>
+
+      <h3>Phased prompts in <code class="path">prototype_prompts/</code></h3>
+      <p>
+        The repo preserves the original six-phase prompt set that scaffolded the
+        codebase, each phase assuming the prior commit:
+      </p>
+      <ol>
+        <li><strong>Product Spec</strong> — game rules, color mixing, section model</li>
+        <li><strong>Project Setup</strong> — Vite / React / TypeScript scaffold</li>
+        <li><strong>Board &amp; Sections</strong> — parser, section detection, topology</li>
+        <li><strong>Game Logic &amp; UI</strong> — game state, color assignment, interaction</li>
+        <li><strong>Puzzle Generator &amp; Solver</strong> — algorithm, generator, hint placement</li>
+        <li><strong>Polish &amp; QA</strong> — tests, edge cases, performance</li>
+      </ol>
+      <p>
+        Phasing prevents the agent from drifting on the hard modules (solver,
+        section detection) — each phase has a narrow scope and a clear acceptance
+        target.
+      </p>
+
+      <h3>Autonomous validation loops</h3>
+      <p>
+        <code class="path">scripts/run-solver-validation-loop.ts</code> behaves like
+        an automated QA agent: it runs the solver against the bulk puzzle set in
+        rounds, analyzes the report, and either re-runs or exits non-zero. It's
+        the kind of harness that lets you make a generator change at midnight and
+        wake up to a clean report — or a clear list of what regressed.
+      </p>
+
+      <h3>Quality-enforced regeneration</h3>
+      <p>
+        The puzzle bundle isn't generated once and trusted. It's regenerated until
+        it passes every audit — uniqueness, no-guess solvability, all-three-color
+        hint coverage. The constraint that every puzzle must use all three base
+        colors as hints (commit <em>"Enforce all-3-color hints and raise retry
+        floor"</em>) lives in the pipeline itself, not as a convention the
+        generator is trusted to follow.
+      </p>
+    </div>
+
+    <!-- Testing -->
+    <div class="card">
+      <h2>Testing approach</h2>
+      <p>
+        Test coverage is deliberately concentrated on the parts where regressions
+        silently corrupt content — not on UI surface area, which is easier to eyeball.
+      </p>
+      <ul>
+        <li>
+          <strong>Unit tests</strong> (Vitest) on solver correctness, layout
+          extraction, layout sampling, layout ordering, and the typed serialization
+          contracts between pipeline stages.
+        </li>
+        <li>
+          <strong>Reference fixtures</strong> in <code class="path">fixtures/</code>:
+          canonical layouts, canonical masks, and both known-valid and known-invalid
+          completed boards — so the solver and validator have ground truth to
+          regression-test against.
+        </li>
+        <li>
+          <strong>End-to-end validators</strong> in <code class="path">scripts/</code>
+          act as integration tests across the whole pipeline and produce
+          machine-readable JSON reports
+          (<code class="path">bulk-solver-report.json</code>, assignment-count
+          reports, distinctness reports).
+        </li>
+        <li>
+          <strong>Meta-tests</strong> like
+          <code class="path">validate-solver-time-vs-solutions.ts</code> assert
+          that more solver time yields more solutions — a sanity check on the
+          timeout knob itself.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Release engineering -->
+    <div class="card">
+      <h2>Release engineering</h2>
+      <p>
+        Release coordination is scripted and intentional, not ad-hoc.
+      </p>
+      <ul>
+        <li>
+          <strong>Two environments</strong> — separate dev and prod Supabase
+          projects, with <code class="path">.env</code> and
+          <code class="path">.env.production</code> in the mobile app.
+        </li>
+        <li>
+          <strong><code class="path">deploy-supabase.sh</code></strong> promotes
+          migrations dev → prod behind a typed-yes confirmation gate so you can't
+          fat-finger a prod push.
+        </li>
+        <li>
+          <strong><code class="path">build-and-submit-ios.sh</code></strong> runs
+          the full local macOS pipeline: archive → IPA export → TestFlight
+          submission, with the order documented (backend live → app build →
+          TestFlight) so a breaking schema change can't ship ahead of the client
+          that handles it.
+        </li>
+        <li>
+          <strong>Account self-deletion</strong> is wired end-to-end — Postgres
+          migration, RLS policy, mobile UI, all the way to the "Delete my account"
+          button in the Account sheet.
+        </li>
+      </ul>
+
+      <div class="inline-shot">
+        <img src="assets/screenshots/sign%20out.png" alt="Mozaiq Account sheet — signed-in state with sign out and self-delete" />
+      </div>
+    </div>
+
+    <!-- Closing -->
+    <div class="card">
+      <h2>What this proves</h2>
+      <p>
+        Mozaiq isn't just a puzzle game — it's a system. A constraint solver that's
+        the same code on the phone and in the validator. A generator that earns its
+        output by passing audits. A release pipeline that knows what order to ship
+        things in. An agent-assisted workflow that produces a real, testable, shippable
+        product instead of a demo.
+      </p>
+      <p>
+        Built solo. Documented as it was built. Ready to scale.
+      </p>
+      <p>
+        — Michael ·
+        <a href="https://github.com/bostondevelopment/" target="_blank" rel="noopener">github.com/bostondevelopment</a>
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <span>© <span id="year">2026</span> Mozaiq. All rights reserved.</span>
+    <span>
+      <a href="index.html">The App</a>
+      <a href="engineering.html">Engineering</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="support.html">Support</a>
+    </span>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
