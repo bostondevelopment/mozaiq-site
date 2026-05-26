@@ -23,6 +23,7 @@ html, body {
   font-weight: 600;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;        /* safety: fixed-position decorative blobs can poke off-canvas */
 }
 
 body {
@@ -567,12 +568,39 @@ code.path {
   aspect-ratio: 9 / 19.5;
 }
 
-/* Mobile */
+/* ─────────────────────────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────────────────────────── */
+
+/* Nav: at ≤720px the 5 links + brand + 22px gaps cramp before
+   anything else does. Stack vertically — brand on top, links wrap
+   below in a centered row. Kicks in earlier than the 640px content
+   rules below on purpose. */
+@media (max-width: 720px) {
+  .nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 20px 16px;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    width: 100%;
+  }
+  .nav-links a {
+    padding: 4px 2px;        /* taller tap target without changing visual rhythm */
+  }
+}
+
+/* Phone-sized content tweaks */
 @media (max-width: 640px) {
-  .nav, main, footer { padding-left: 20px; padding-right: 20px; }
-  .nav-links { gap: 14px; font-size: 13px; }
+  main, footer { padding-left: 20px; padding-right: 20px; }
   .page-title { font-size: 30px; }
+  .hero { padding: 36px 0 24px; }
   .hero h1 { font-size: 48px; }
+  .hero .tagline { font-size: 16px; }
   .card { padding: 24px; }
   .screenshot-strip { grid-template-columns: 1fr; max-width: 320px; margin-left: auto; margin-right: auto; }
   .feature-row, .feature-row.reverse {
@@ -582,4 +610,53 @@ code.path {
   .feature-row.reverse .feature-shot { order: 0; }
   .feature-shot, .inline-shot { max-width: 320px; margin-left: auto; margin-right: auto; }
   .feature-copy h2 { font-size: 26px; }
+  .arc-title { font-size: 24px; }
+  .stat-num { font-size: 24px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Footer: stack copyright on top, links wrap-centered below */
+  footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  footer > span:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 14px;
+  }
+  footer a {
+    margin-left: 0;
+  }
+}
+
+/* Small phones (iPhone SE 1st gen 320px, iPhone 12 mini 360px, iPhone 14 375px).
+   Hero/title shrink so they don't push the viewport; CTA buttons stack;
+   decorative background blobs shrink so they don't crowd content. */
+@media (max-width: 400px) {
+  .nav { padding: 16px 16px 12px; }
+  .nav-links { font-size: 13px; gap: 6px 14px; }
+  main { padding-left: 16px; padding-right: 16px; }
+  footer { padding-left: 16px; padding-right: 16px; font-size: 12px; }
+
+  .hero h1 { font-size: 42px; letter-spacing: -1px; }
+  .hero .tagline { font-size: 15px; }
+  .hero .description { font-size: 15px; }
+  .page-title { font-size: 26px; letter-spacing: -0.5px; }
+  .card { padding: 20px; border-radius: 18px; }
+  .card h2 { font-size: 18px; }
+  .feature-copy h2 { font-size: 22px; }
+
+  .stat-grid { grid-template-columns: 1fr; }
+  .stat-num { font-size: 26px; }
+
+  /* Decorative blobs — shrink + pull farther off-canvas on small screens */
+  body::before { width: 220px; height: 220px; top: -60px; left: -80px; }
+  body::after  { width: 200px; height: 200px; bottom: -70px; right: -60px; }
+
+  /* CTA buttons stack one-per-row */
+  .cta-row { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
 }
