@@ -4,6 +4,8 @@ Public-facing static pages for the Mozaiq iOS app: privacy policy, terms of serv
 support page, and a minimal landing page. Used to satisfy App Store Connect's
 required URLs (privacy policy, support).
 
+Visit https://bostondevelopment.github.io/mozaiq-site/ 
+
 ## Files
 
 - `index.html` — landing page
