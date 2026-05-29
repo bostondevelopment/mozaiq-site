@@ -21,7 +21,7 @@ The shipping bundle contains **~3,187 machine-validated puzzles** across 7×7, 9
 
 ## How it was built
 
-The Mozaiq codebase was built solo in ~3 weeks by **directing AI coding agents (Claude Code, Cursor)** through a documented 6-phase prompt workflow — not by hand-writing the code. The interesting artifact isn't lines typed; it's the system the agents produced under direction:
+The Mozaiq codebase was built solo by **directing AI coding agents (Claude Code, Cursor)** through a documented 6-phase prompt workflow — not by hand-writing the code. The interesting artifact isn't lines typed; it's the system the agents produced under direction:
 
 - A **shared `@crosscolor/core` TypeScript package** that runs the same solver on the phone and in the validation pipeline — no logic drift between what generates puzzles and what plays them.
 - An **industrial-grade procedural content factory** — 41 pipeline scripts covering ingest, layout extraction, generation, difficulty rating, curation, and a convergence-loop validator that re-runs until the bundle passes audits.
