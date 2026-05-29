@@ -19,7 +19,7 @@ The shipping bundle contains **~3,187 machine-validated puzzles** across 7×7, 9
 
 **Status:** TestFlight beta (not the App Store, by choice).
 
-## How it was built — honest framing
+## How it was built
 
 The Mozaiq codebase was built solo in ~3 weeks by **directing AI coding agents (Claude Code, Cursor)** through a documented 6-phase prompt workflow — not by hand-writing the code. The interesting artifact isn't lines typed; it's the system the agents produced under direction:
 
