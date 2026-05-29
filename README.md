@@ -1,76 +1,38 @@
-# mozaiq-site
+# Mozaiq — color logic puzzles
 
-Public-facing static pages for the Mozaiq iOS app: privacy policy, terms of service,
-support page, and a minimal landing page. Used to satisfy App Store Connect's
-required URLs (privacy policy, support).
+A daily color logic puzzle game for iPhone. Three colors mix into six — figure out which section gets which paint by reading the intersections, beat the clock, climb the leaderboard.
 
-Visit https://bostondevelopment.github.io/mozaiq-site/ 
+→ **[The app + how to play](https://bostondevelopment.github.io/mozaiq-site/)**
+→ **[Engineering deep-dive](https://bostondevelopment.github.io/mozaiq-site/engineering.html)** — solver, content pipeline, agent workflow
 
-## Files
+---
 
-- `index.html` — landing page
-- `privacy.html` — privacy policy (App Store Connect: **Privacy Policy URL**)
-- `terms.html` — terms of service (App Store Connect: **License Agreement** if used)
-- `support.html` — support / contact (App Store Connect: **Support URL**)
-- `style.css` — shared Mozaiq-styled CSS
+## About this repo
 
-Pure static HTML/CSS. No build step. Works locally by opening any `.html` in a browser.
+This repository hosts the public-facing site for Mozaiq — landing page, engineering write-up, privacy/terms/support. The Mozaiq app itself (React Native / Expo / TypeScript on Supabase) lives in a separate, private repository.
 
-## Before you publish
+## About the app
 
-**Update the support email.** All four pages reference `support@mozaiq.app`, which
-is a placeholder. Either:
-- Register that email at a domain you own and point MX to your inbox, OR
-- Find-and-replace `support@mozaiq.app` with whatever email you'll actually monitor
-  (e.g. your personal Gmail). You can change it later — just be consistent so
-  App Store Connect matches.
+Mozaiq is a daily color logic puzzle. Every board is split into connected sections; the cells where two sections cross show the *mixed* color of the two — yellow + blue = green, red + yellow = orange, red + blue = purple. Read the mix, work backward to the section colors, fill the board before time runs out.
 
-```bash
-# Quick swap (macOS sed):
-cd mozaiq-site
-sed -i '' 's/support@mozaiq.app/YOUR-EMAIL@example.com/g' *.html
-```
+The shipping bundle contains **~3,187 machine-validated puzzles** across 7×7, 9×9, and 15×15 boards, produced by a backtracking constraint solver and an automated validation loop that regenerates puzzles until they pass solvability, uniqueness, and no-guess audits.
 
-Optionally, update the governing-law jurisdiction in `terms.html` (currently
-Massachusetts) if you're not based there.
+**Status:** TestFlight beta (not the App Store, by choice).
 
-## Deploy: Vercel (recommended, ~5 min)
+## How it was built — honest framing
 
-Free, custom domain support, deploys on git push.
+The Mozaiq codebase was built solo in ~3 weeks by **directing AI coding agents (Claude Code, Cursor)** through a documented 6-phase prompt workflow — not by hand-writing the code. The interesting artifact isn't lines typed; it's the system the agents produced under direction:
 
-1. Push this folder to a GitHub repo (public or private — Vercel handles both):
-   ```bash
-   cd /Users/michael/Documents/Code/mozaiq-site
-   git init && git add . && git commit -m "Initial site"
-   gh repo create mozaiq-site --private --source=. --push
-   ```
-2. Go to [vercel.com/new](https://vercel.com/new) → import the repo
-3. **Framework Preset:** "Other" — Vercel will detect it as static HTML
-4. Click Deploy. You get a URL like `https://mozaiq-site.vercel.app`
-5. Paste that URL (plus `/privacy.html`, `/support.html`) into App Store Connect
+- A **shared `@crosscolor/core` TypeScript package** that runs the same solver on the phone and in the validation pipeline — no logic drift between what generates puzzles and what plays them.
+- An **industrial-grade procedural content factory** — 41 pipeline scripts covering ingest, layout extraction, generation, difficulty rating, curation, and a convergence-loop validator that re-runs until the bundle passes audits.
+- A **~37K-line TypeScript codebase** across a monorepo (`packages/core`, `mobile`, `src`, `scripts`) with a Supabase backend, a Vite/React web evaluation tool, and the React Native player.
+- A **self-built local iOS build-sign-submit pipeline** — full Apple code-signing chain, `xcodebuild` archive → IPA, EAS submit to TestFlight — no paid CI services.
 
-## Deploy: GitHub Pages (requires public repo on free plan)
+The **[engineering page](https://bostondevelopment.github.io/mozaiq-site/engineering.html)** walks through all of it.
 
-1. Push this folder as a **public** GitHub repo
-2. Repo Settings → Pages → Source: `main` branch, root folder
-3. URL: `https://<your-username>.github.io/mozaiq-site/`
-4. Paste those URLs into App Store Connect
+---
 
-## Deploy: Cloudflare Pages (also free)
+## Author
 
-Same flow as Vercel. Slightly faster cold loads. Use [pages.cloudflare.com](https://pages.cloudflare.com).
-
-## URLs to paste into App Store Connect
-
-After deploying, paste these in **App Store Connect → App Information**:
-
-| Field | URL |
-|---|---|
-| Privacy Policy URL | `https://your-domain/privacy.html` |
-| Support URL | `https://your-domain/support.html` |
-| Marketing URL (optional) | `https://your-domain/` |
-
-## Updating the site later
-
-It's just static HTML. Edit, commit, push — Vercel / GitHub Pages auto-redeploy.
-No build step. No framework to update.
+Built by **Michael Finneran** — Boston, MA
+[linkedin.com/in/michaelfinneran](https://linkedin.com/in/michaelfinneran) · [MRFinneran@gmail.com](mailto:MRFinneran@gmail.com)
